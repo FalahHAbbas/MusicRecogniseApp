@@ -21,7 +21,7 @@ builder.Services.AddScoped<IYoutubeService, YoutubeService>();
 builder.Services.AddScoped<IAuddService, AuddService>();
 builder.Services.AddScoped<IFfmpegService, FfmpegService>();
 builder.Services.AddScoped<IMusicService, MusicService>();
-builder.Services.AddSingleton<VideoHub>();
+builder.Services.AddSingleton<MusicHub>();
 
 var app = builder.Build();
 app.UseCors("CorsPolicy");
@@ -33,5 +33,5 @@ app.UseAuthorization();
 app.MapControllers();
 app.UseRouting();
 
-app.UseEndpoints(builder => { builder.MapHub<VideoHub>("/video"); });
+app.UseEndpoints(builder => { builder.MapHub<MusicHub>("/music"); });
 app.Run();

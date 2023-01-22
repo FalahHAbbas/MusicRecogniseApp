@@ -16,14 +16,14 @@ public interface IFfmpegService {
 }
 
 public class FfmpegService : IFfmpegService {
-    private readonly VideoHub _videoHub;
+    private readonly MusicHub _musicHub;
 
-    public FfmpegService(VideoHub videoHub) { _videoHub = videoHub; }
+    public FfmpegService(MusicHub musicHub) { _musicHub = musicHub; }
 
     public async Task<string> ClipAndConvertToMp3(string path, Guid id) {
-        await _videoHub.SendMessageToGroup(id.ToString(), "Clipping and converting to mp3");
+        await _musicHub.SendMessageToGroup(id.ToString(), "Clipping and converting to mp3");
         if (!File.Exists(path)) {
-            await _videoHub.SendMessageToGroup(id.ToString(), "File not found", "error");
+            await _musicHub.SendMessageToGroup(id.ToString(), "File not found", "error");
         }
 
         string savePath = $"{System.IO.Path.GetTempPath()}Clips";
@@ -46,7 +46,7 @@ public class FfmpegService : IFfmpegService {
         process.OutputDataReceived += (sender, args) => {
             if (args.Data != null) {
                 Console.WriteLine(args.Data);
-                _videoHub.SendMessageToGroup(id.ToString(), Format(args.Data));
+                _musicHub.SendMessageToGroup(id.ToString(), Format(args.Data));
             }
         };
         await process.WaitForExitAsync();

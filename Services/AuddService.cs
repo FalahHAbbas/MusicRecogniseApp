@@ -16,9 +16,9 @@ public interface IAuddService {
 }
 
 public class AuddService : IAuddService {
-    private readonly VideoHub _videoHub;
+    private readonly MusicHub _musicHub;
 
-    public AuddService(VideoHub videoHub) { _videoHub = videoHub; }
+    public AuddService(MusicHub musicHub) { _musicHub = musicHub; }
 
 
     private record RecogniseResponse(string status, RecogniseResult result);
@@ -30,12 +30,12 @@ public class AuddService : IAuddService {
     );
 
     public async Task<string> Recognise(string path, Guid id) {
-        await _videoHub.SendMessageToGroup(id.ToString(), "Recognising song");
+        await _musicHub.SendMessageToGroup(id.ToString(), "Recognising song");
         string url = "https://api.audd.io/recognize";
-        string API_KEY = "319ba40f835f05f0bdc61b10566f552a";
+        string apiKey = API_KEY;
 
         var client = new HttpClient();
-        client.DefaultRequestHeaders.Add("apikey", API_KEY);
+        client.DefaultRequestHeaders.Add("apikey", apiKey);
         var content = new MultipartFormDataContent();
         content.Add(new StreamContent(File.OpenRead(path)), "file", "file.mp3");
         var response = await client.PostAsync(url, content);
@@ -43,12 +43,12 @@ public class AuddService : IAuddService {
 
         var result = JsonSerializer.Deserialize<RecogniseResponse>(responseString);
         if (result.status == "success") {
-            await _videoHub.SendMessageToGroup(id.ToString(),
+            await _musicHub.SendMessageToGroup(id.ToString(),
                 "Song recognised successfully" + result.result.artist + " " + result.result.title);
             return result.result.artist;
         }
         else {
-            await _videoHub.SendMessageToGroup(id.ToString(), "Couldn't recognise song", "error");
+            await _musicHub.SendMessageToGroup(id.ToString(), "Couldn't recognise song", "error");
         }
 
         return null;

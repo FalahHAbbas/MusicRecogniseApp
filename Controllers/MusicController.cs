@@ -9,11 +9,11 @@ namespace MusicRecogniseApp.Controllers;
 [Route("[controller]")]
 public class MusicController : ControllerBase {
     private readonly IMusicService _musicService;
-    private readonly VideoHub _videoHub;
+    private readonly MusicHub _musicHub;
 
-    public MusicController(IMusicService musicService, VideoHub videoHub) {
+    public MusicController(IMusicService musicService, MusicHub musicHub) {
         _musicService = musicService;
-        _videoHub = videoHub;
+        _musicHub = musicHub;
     }
 
     [HttpGet]

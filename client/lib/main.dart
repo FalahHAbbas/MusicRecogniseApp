@@ -41,7 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _txtController = TextEditingController();
   List<Song> _songs = [];
   HubConnection hubConnection =
-      HubConnectionBuilder().withUrl(API.BASE_URL).build();
+      HubConnectionBuilder().withUrl(API.BASE_HUB_URL).build();
   String _message = '';
 
   @override
@@ -86,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         .then((value) async {
                           hubConnection.stop();
                           hubConnection = HubConnectionBuilder()
-                              .withUrl(API.BASE_URL)
+                              .withUrl(API.BASE_HUB_URL)
                               .build();
                           setState(() => _message = 'Connecting to server');
                           await hubConnection.start();

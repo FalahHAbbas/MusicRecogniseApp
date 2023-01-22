@@ -1,18 +1,16 @@
 import 'dart:async';
-
-//import http package
+import 'package:client/api.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class VideoService {
   Future<String> getVideoId(String url) async {
     try {
       var response = await http.get(
         Uri(
-          scheme: 'http',
-          host: 'localhost',
-          port: 5260,
-          path: '/Music',
+          scheme: API.scheme,
+          host: API.host,
+          port: API.port,
+          path: API.path,
           queryParameters: {'url': url},
         ),
         headers: {

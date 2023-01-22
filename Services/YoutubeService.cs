@@ -21,12 +21,12 @@ public record Song(string title, string artist, string image, string url);
 public class YoutubeService : IYoutubeService {
     private readonly YouTubeService _service =
         new(new BaseClientService.Initializer() {
-            ApiKey = "AIzaSyDQqiEQTkpHYZbwT-m1wP8vloGj51VJ0tM"
+            ApiKey = API_KEY
         });
 
-    private readonly VideoHub _videoHub;
+    private readonly MusicHub _musicHub;
 
-    public YoutubeService(VideoHub videoHub) { _videoHub = videoHub; }
+    public YoutubeService(MusicHub musicHub) { _musicHub = musicHub; }
 
     public async Task<string> Fetch(string url, Guid id) {
         string savePath = $"{System.IO.Path.GetTempPath()}Videos";
@@ -48,7 +48,7 @@ public class YoutubeService : IYoutubeService {
         while (!process.StandardOutput.EndOfStream) {
             string line = process.StandardOutput.ReadLine();
             // Console.WriteLine(line);
-            await _videoHub.SendMessageToGroup(id.ToString(), Format(line));
+            await _musicHub.SendMessageToGroup(id.ToString(), Format(line));
         }
 
         await process.WaitForExitAsync();
@@ -70,7 +70,7 @@ public class YoutubeService : IYoutubeService {
 
 
     public async Task<List<Song>> GetSongs(string artist, Guid id) {
-        await _videoHub.SendMessageToGroup(id.ToString(), "Fetching songs");
+        await _musicHub.SendMessageToGroup(id.ToString(), "Fetching songs");
         var searchListRequest = _service.Search.List("snippet");
         searchListRequest.Q = artist;
         searchListRequest.MaxResults = 30;
@@ -78,10 +78,10 @@ public class YoutubeService : IYoutubeService {
 
         var searchListResponse = await searchListRequest.ExecuteAsync();
         if (searchListResponse.Items.Count == 0) {
-            await _videoHub.SendMessageToGroup(id.ToString(), "couldn't get songs", "error");
+            await _musicHub.SendMessageToGroup(id.ToString(), "couldn't get songs", "error");
         }
         else {
-            await _videoHub.SendMessageToGroup(id.ToString(), "Songs fetched successfully");
+            await _musicHub.SendMessageToGroup(id.ToString(), "Songs fetched successfully");
         }
 
         List<Song> songs = searchListResponse.Items.Select(item => new Song(
@@ -93,7 +93,7 @@ public class YoutubeService : IYoutubeService {
             .ToList();
 
         string json = JsonSerializer.Serialize(songs);
-        await _videoHub.SendMessageToGroup(id.ToString(), json, "data");
+        await _musicHub.SendMessageToGroup(id.ToString(), json, "data");
         return songs;
     }
 }

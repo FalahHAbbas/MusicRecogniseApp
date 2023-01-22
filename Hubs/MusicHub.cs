@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace MusicRecogniseApp.Hubs;
 
-public class VideoHub : Hub {
+public class MusicHub : Hub {
     public async Task SendMessage(string message) {
         await Clients.All.SendAsync("newMessage", "anonymous", message);
     }
