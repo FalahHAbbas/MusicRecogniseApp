@@ -44,7 +44,7 @@ public class AuddService : IAuddService {
         var result = JsonSerializer.Deserialize<RecogniseResponse>(responseString);
         if (result.status == "success") {
             await _musicHub.SendMessageToGroup(id.ToString(),
-                "Song recognised successfully" + result.result.artist + " " + result.result.title);
+                "Song recognised successfully " + result.result.artist + " " + result.result.title);
             return result.result.artist;
         }
         else {

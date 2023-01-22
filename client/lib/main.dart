@@ -43,6 +43,7 @@ class _MyHomePageState extends State<MyHomePage> {
   HubConnection hubConnection =
       HubConnectionBuilder().withUrl(API.BASE_HUB_URL).build();
   String _message = '';
+  bool _loading = false;
 
   @override
   void initState() {
@@ -76,7 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   controller: _txtController,
                 ),
               ),
-              if (_message != '') const LinearProgressIndicator(),
+              if (_loading) const LinearProgressIndicator(),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ElevatedButton(
@@ -88,7 +89,10 @@ class _MyHomePageState extends State<MyHomePage> {
                           hubConnection = HubConnectionBuilder()
                               .withUrl(API.BASE_HUB_URL)
                               .build();
-                          setState(() => _message = 'Connecting to server');
+                          setState(() {
+                            _message = 'Connecting to server';
+                            _loading = true;
+                          });
                           await hubConnection.start();
                           await hubConnection
                               .invoke('AddToGroup', args: [value]);
@@ -104,16 +108,17 @@ class _MyHomePageState extends State<MyHomePage> {
                                             .map<Song>(
                                                 (song) => Song.fromJson(song))
                                             .toList();
-                                        this._message = '';
+                                        _loading = false;
                                       });
                                     } else if (type == 'error') {
-                                      this._message = '';
+                                      _message = '';
+                                      _loading=false;
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(SnackBar(
                                         content: Text(message[1].toString()),
                                       ));
                                     } else {
-                                      this._message = message[1].toString();
+                                      _message = message[1].toString();
                                     }
 
                                     print(message.toString());
